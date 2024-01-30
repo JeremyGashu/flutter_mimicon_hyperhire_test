@@ -37,6 +37,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final ImagePicker _picker = ImagePicker();
   XFile? image;
+  Offset? position;
+  double width = 30.0, height = 30.0;
 
   _selectImageFromGallery() async {
     final tempImage = await _picker.pickImage(source: ImageSource.gallery);
@@ -54,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    position = const Offset(100, 100);
     _picker.pickImage(source: ImageSource.camera).then((value) {
       setState(() {
         image = value;
@@ -100,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             onSelected: (item) {
                               if (item == "camera") {
                                 _captureImage();
-                              } else if ("item" == "gallery") {
+                              } else if (item == "gallery") {
                                 _selectImageFromGallery();
                               }
                             },
@@ -119,13 +122,93 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 420,
-                      child: Image.file(
-                        File(image!.path),
-                        fit: BoxFit.fill,
-                      ),
+                    Stack(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          height: 420,
+                          child: Image.file(
+                            File(image!.path),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        Positioned(
+                          left: position?.dx ?? 0,
+                          top: (position?.dy ?? 0) - height - 66,
+                          child: Draggable(
+                            feedback: Row(
+                              children: [
+                                Container(
+                                  width: 48,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.elliptical(90, 55),
+                                    ),
+                                    color: Colors.green.withOpacity(0.5),
+                                  ),
+                                  child: const Center(
+                                    child: SizedBox(),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 30,
+                                ),
+                                Container(
+                                  width: 48,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.elliptical(90, 55),
+                                    ),
+                                    color: Colors.green.withOpacity(0.5),
+                                  ),
+                                  child: const Center(
+                                    child: SizedBox(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onDraggableCanceled:
+                                (Velocity velocity, Offset offset) {
+                              setState(() => position = offset);
+                            },
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 48,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.elliptical(90, 55),
+                                    ),
+                                    color: Colors.green.withOpacity(0.8),
+                                  ),
+                                  child: const Center(
+                                    child: SizedBox(),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 30,
+                                ),
+                                Container(
+                                  width: 48,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.elliptical(90, 55),
+                                    ),
+                                    color: Colors.green.withOpacity(0.8),
+                                  ),
+                                  child: const Center(
+                                    child: SizedBox(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 25,
@@ -173,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               child: const Center(
                                   child: Text(
-                                "M",
+                                "EYE",
                                 style: TextStyle(fontSize: 22),
                               )),
                             ),
@@ -193,7 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               child: const Center(
                                   child: Text(
-                                "N",
+                                "MOU",
                                 style: TextStyle(fontSize: 22),
                               )),
                             ),
