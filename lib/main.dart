@@ -241,7 +241,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                         width: 45,
                                         height: 26,
                                         decoration: BoxDecoration(
-                                          color: Colors.green.withOpacity(0.5),
+                                          color:
+                                              kGreenBackground.withOpacity(0.8),
                                         ),
                                         child: const Center(
                                           child: SizedBox(),
@@ -256,7 +257,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                         width: 45,
                                         height: 26,
                                         decoration: BoxDecoration(
-                                          color: Colors.green.withOpacity(0.5),
+                                          color:
+                                              kGreenBackground.withOpacity(0.8),
                                         ),
                                         child: const Center(
                                           child: SizedBox(),
@@ -278,8 +280,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Container(
                                         width: 45,
                                         height: 26,
-                                        decoration: BoxDecoration(
-                                          color: Colors.green.withOpacity(0.7),
+                                        decoration: const BoxDecoration(
+                                          color: kGreenBackground,
                                         ),
                                         child: const Center(
                                           child: SizedBox(),
@@ -293,8 +295,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Container(
                                         width: 45,
                                         height: 26,
-                                        decoration: BoxDecoration(
-                                          color: Colors.green.withOpacity(0.7),
+                                        decoration: const BoxDecoration(
+                                          color: kGreenBackground,
                                         ),
                                         child: const Center(
                                           child: SizedBox(),
@@ -319,7 +321,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                         width: 66,
                                         height: 30,
                                         decoration: BoxDecoration(
-                                          color: Colors.green.withOpacity(0.5),
+                                          color:
+                                              kGreenBackground.withOpacity(0.8),
                                         ),
                                         child: const Center(
                                           child: SizedBox(),
@@ -341,11 +344,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Container(
                                         width: 66,
                                         height: 30,
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                            Radius.elliptical(55, 55),
-                                          ),
-                                          color: Colors.green.withOpacity(0.7),
+                                        decoration: const BoxDecoration(
+                                          color: kGreenBackground,
                                         ),
                                         child: const Center(
                                           child: SizedBox(),
