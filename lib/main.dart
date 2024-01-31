@@ -43,7 +43,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final ImagePicker _picker = ImagePicker();
   final WidgetsToImageController _imageController = WidgetsToImageController();
-  final _faceDetector = FaceDetector(options: FaceDetectorOptions());
+  final _faceDetector = FaceDetector(
+      options: FaceDetectorOptions(
+    enableClassification: true,
+    enableContours: true,
+    performanceMode: FaceDetectorMode.accurate,
+    enableLandmarks: true,
+  ));
 
   XFile? image;
   Offset? eyePosition;
@@ -230,33 +236,31 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Draggable(
                                 feedback: Row(
                                   children: [
-                                    Container(
-                                      width: 42,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.elliptical(55, 55),
+                                    ClipOval(
+                                      child: Container(
+                                        width: 45,
+                                        height: 26,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withOpacity(0.5),
                                         ),
-                                        color: Colors.green.withOpacity(0.5),
-                                      ),
-                                      child: const Center(
-                                        child: SizedBox(),
+                                        child: const Center(
+                                          child: SizedBox(),
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
                                       width: eyeGap,
                                     ),
-                                    Container(
-                                      width: 42,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.elliptical(55, 55),
+                                    ClipOval(
+                                      child: Container(
+                                        width: 45,
+                                        height: 26,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withOpacity(0.5),
                                         ),
-                                        color: Colors.green.withOpacity(0.5),
-                                      ),
-                                      child: const Center(
-                                        child: SizedBox(),
+                                        child: const Center(
+                                          child: SizedBox(),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -270,33 +274,31 @@ class _MyHomePageState extends State<MyHomePage> {
                                 },
                                 child: Row(
                                   children: [
-                                    Container(
-                                      width: 42,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.elliptical(55, 55),
+                                    ClipOval(
+                                      child: Container(
+                                        width: 45,
+                                        height: 26,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withOpacity(0.7),
                                         ),
-                                        color: Colors.green.withOpacity(0.7),
-                                      ),
-                                      child: const Center(
-                                        child: SizedBox(),
+                                        child: const Center(
+                                          child: SizedBox(),
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
                                       width: eyeGap,
                                     ),
-                                    Container(
-                                      width: 42,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.elliptical(55, 55),
+                                    ClipOval(
+                                      child: Container(
+                                        width: 45,
+                                        height: 26,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withOpacity(0.7),
                                         ),
-                                        color: Colors.green.withOpacity(0.7),
-                                      ),
-                                      child: const Center(
-                                        child: SizedBox(),
+                                        child: const Center(
+                                          child: SizedBox(),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -312,17 +314,16 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Draggable(
                                 feedback: Row(
                                   children: [
-                                    Container(
-                                      width: 75,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.elliptical(55, 55),
+                                    ClipOval(
+                                      child: Container(
+                                        width: 66,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withOpacity(0.5),
                                         ),
-                                        color: Colors.green.withOpacity(0.5),
-                                      ),
-                                      child: const Center(
-                                        child: SizedBox(),
+                                        child: const Center(
+                                          child: SizedBox(),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -336,17 +337,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                 },
                                 child: Row(
                                   children: [
-                                    Container(
-                                      width: 75,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.elliptical(55, 55),
+                                    ClipOval(
+                                      child: Container(
+                                        width: 66,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.elliptical(55, 55),
+                                          ),
+                                          color: Colors.green.withOpacity(0.7),
                                         ),
-                                        color: Colors.green.withOpacity(0.7),
-                                      ),
-                                      child: const Center(
-                                        child: SizedBox(),
+                                        child: const Center(
+                                          child: SizedBox(),
+                                        ),
                                       ),
                                     ),
                                   ],
