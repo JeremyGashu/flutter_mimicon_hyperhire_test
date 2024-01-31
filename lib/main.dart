@@ -222,10 +222,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           SizedBox(
                             width: double.infinity,
-                            height: 390,
+                            height: 300,
                             child: Image.file(
                               File(image!.path),
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             ),
                           ),
                           if (eyePositionClicked)
@@ -554,28 +554,25 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: () async {
                             try {
                               if (mouthPositionClicked && eyePositionClicked) {
-                                final granted = await PermissionHelper
+                                await PermissionHelper
                                     .requestStoragePermissions();
-                                if (granted) {
+                                setState(() {
+                                  savingFile = true;
+                                });
+                                try {
+                                  await savePictureToFile(_imageController);
                                   setState(() {
-                                    savingFile = true;
-                                  });
-                                  try {
-                                    await savePictureToFile(_imageController);
-                                    setState(() {
-                                      savingFile = false;
-                                    });
-                                  } catch (e) {
-                                    log(e.toString());
                                     savingFile = false;
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  permissionNotGrantedString)));
-                                    }
+                                  });
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                imageSavedToGalleryString)));
                                   }
-                                } else {
+                                } catch (e) {
+                                  log(e.toString());
+                                  savingFile = false;
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
@@ -584,8 +581,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }
                                 }
                               }
-                            } catch (e) {
-                              log(e.toString());
+                            } catch (e, src) {
+                              log(src.toString());
+                              throw Exception(e);
                             }
                           },
                           child: const Text(
