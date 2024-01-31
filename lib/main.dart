@@ -222,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           SizedBox(
                             width: double.infinity,
-                            height: 440,
+                            height: 390,
                             child: Image.file(
                               File(image!.path),
                               fit: BoxFit.fill,
