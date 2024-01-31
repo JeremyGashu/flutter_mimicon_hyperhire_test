@@ -129,11 +129,40 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              setState(() {
-                                image = null;
-                                eyePositionClicked = false;
-                                mouthPositionClicked = false;
-                              });
+                              if (!multipleFaceDetected && image != null) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("닫다?"),
+                                      content: const Text("편집을 취소하시겠습니까?"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("취소")),
+                                        TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                image = null;
+                                                eyePositionClicked = false;
+                                                mouthPositionClicked = false;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("닫다"))
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                setState(() {
+                                  image = null;
+                                  eyePositionClicked = false;
+                                  mouthPositionClicked = false;
+                                });
+                              }
                             },
                             icon: const Icon(
                               Icons.close,
@@ -399,11 +428,40 @@ class _MyHomePageState extends State<MyHomePage> {
                           ],
                         ),
                         onTap: () {
-                          setState(() {
-                            image = null;
-                            eyePositionClicked = false;
-                            mouthPositionClicked = false;
-                          });
+                          if (!multipleFaceDetected && image != null) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text("닫다?"),
+                                  content: const Text("편집을 취소하시겠습니까?"),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("취소")),
+                                    TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            image = null;
+                                            eyePositionClicked = false;
+                                            mouthPositionClicked = false;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("닫다"))
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            setState(() {
+                              image = null;
+                              eyePositionClicked = false;
+                              mouthPositionClicked = false;
+                            });
+                          }
                         },
                       ),
                     ),
