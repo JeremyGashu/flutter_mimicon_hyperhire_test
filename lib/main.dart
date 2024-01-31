@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mimicon_hyperhire_test/constants.dart';
 import 'package:flutter_mimicon_hyperhire_test/file_handler.dart';
 import 'package:flutter_mimicon_hyperhire_test/permission_handler.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 
@@ -42,6 +43,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final ImagePicker _picker = ImagePicker();
   final WidgetsToImageController _imageController = WidgetsToImageController();
+  final _faceDetector = FaceDetector(options: FaceDetectorOptions());
 
   XFile? image;
   Offset? eyePosition;
@@ -49,7 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
   double eyeGap = 30;
   bool eyePositionClicked = false,
       mouthPositionClicked = false,
-      savingFile = false;
+      savingFile = false,
+      multipleFaceDetected = false;
   double eyeCircleWidth = 30.0, eyeCircleHeight = 30.0;
   double mouthCircleWidth = 60.0, mouthCircleHeight = 30.0;
   final GlobalKey genKey = GlobalKey();
@@ -59,6 +62,20 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       image = tempImage;
     });
+    if (image?.path != null) {
+      final faces = await _faceDetector
+          .processImage(InputImage.fromFilePath(image!.path));
+      log("Faces detected = ${faces.length}");
+      if (faces.length > 1) {
+        setState(() {
+          multipleFaceDetected = true;
+        });
+      } else {
+        setState(() {
+          multipleFaceDetected = false;
+        });
+      }
+    }
   }
 
   _captureImage() async {
@@ -66,11 +83,26 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       image = tempImage;
     });
+    if (image?.path != null) {
+      final faces = await _faceDetector
+          .processImage(InputImage.fromFilePath(image!.path));
+      log("Faces detected = ${faces.length}");
+      if (faces.length > 1) {
+        setState(() {
+          multipleFaceDetected = true;
+        });
+      } else {
+        setState(() {
+          multipleFaceDetected = false;
+        });
+      }
+    }
   }
 
   @override
   void initState() {
     eyePosition = const Offset(150, 150);
+
     mouthPosition = const Offset(170, 250);
     _picker.pickImage(source: ImageSource.camera).then((value) {
       setState(() {
@@ -138,10 +170,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                 value: "camera",
                                 child: Text('새로운 사진을 찍다'),
                               ),
-                              const PopupMenuItem<String>(
-                                value: "position",
-                                child: Text('위치 재설정'),
-                              ),
+                              if (!multipleFaceDetected)
+                                const PopupMenuItem<String>(
+                                  value: "position",
+                                  child: Text('위치 재설정'),
+                                ),
                             ],
                           ),
                         ],
@@ -154,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           SizedBox(
                             width: double.infinity,
-                            height: 420,
+                            height: 440,
                             child: Image.file(
                               File(image!.path),
                               fit: BoxFit.fill,
@@ -291,13 +324,35 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               ),
                             ),
+                          if (multipleFaceDetected)
+                            Positioned(
+                              left: 100,
+                              top: 20,
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 240,
+                                height: 69,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.black.withOpacity(0.4),
+                                ),
+                                child: const Center(
+                                    child: Text(
+                                  multipleFaceDetectedString,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )),
+                              ),
+                            ),
                         ],
                       ),
                     ),
                     const SizedBox(
                       height: 25,
                     ),
-                    if (eyePositionClicked)
+                    if (eyePositionClicked && !multipleFaceDetected)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -322,7 +377,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ],
                       ),
-                    const Spacer(),
+                    if (!multipleFaceDetected) const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: InkWell(
@@ -343,70 +398,79 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ],
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          setState(() {
+                            image = null;
+                            eyePositionClicked = false;
+                            mouthPositionClicked = false;
+                          });
+                        },
                       ),
                     ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                eyePositionClicked = true;
-                              });
-                            },
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Center(
-                                  child: Text(
-                                "눈",
-                                style: TextStyle(fontSize: 18),
-                              )),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                mouthPositionClicked = true;
-                              });
-                            },
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Center(
-                                  child: Text(
-                                "입",
-                                style: TextStyle(fontSize: 18),
-                              )),
-                            ),
-                          ),
-                        ],
+                    if (!multipleFaceDetected)
+                      const SizedBox(
+                        height: 25,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 58,
-                    ),
+                    if (!multipleFaceDetected)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  eyePositionClicked = true;
+                                });
+                              },
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Center(
+                                    child: Text(
+                                  "눈",
+                                  style: TextStyle(fontSize: 18),
+                                )),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  mouthPositionClicked = true;
+                                });
+                              },
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Center(
+                                    child: Text(
+                                  "입",
+                                  style: TextStyle(fontSize: 18),
+                                )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (!multipleFaceDetected)
+                      const SizedBox(
+                        height: 58,
+                      ),
                     if (savingFile)
                       const CircularProgressIndicator(
                         color: kAppPrimaryColor,
                       ),
-                    if (!savingFile)
+                    if (!savingFile && !multipleFaceDetected)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: ElevatedButton(
