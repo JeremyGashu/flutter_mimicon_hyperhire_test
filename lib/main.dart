@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Mimicon',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
       home: const MyHomePage(),
@@ -37,8 +37,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final ImagePicker _picker = ImagePicker();
   XFile? image;
-  Offset? position;
-  double width = 30.0, height = 30.0;
+  Offset? eyePosition;
+  Offset? mouthPosition;
+  bool eyePositionClicked = false, mouthPositionClicked = false;
+  double eyeCircleWidth = 30.0, eyeCircleHeight = 30.0;
+  double mouthCircleWidth = 60.0, mouthCircleHeight = 30.0;
 
   _selectImageFromGallery() async {
     final tempImage = await _picker.pickImage(source: ImageSource.gallery);
@@ -56,7 +59,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    position = const Offset(100, 100);
+    eyePosition = const Offset(150, 150);
+    mouthPosition = const Offset(170, 250);
     _picker.pickImage(source: ImageSource.camera).then((value) {
       setState(() {
         image = value;
@@ -76,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ? Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 30, bottom: 20),
+                      padding: const EdgeInsets.only(top: 50, bottom: 30),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -84,6 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: () {
                               setState(() {
                                 image = null;
+                                eyePositionClicked = false;
                               });
                             },
                             icon: const Icon(
@@ -105,6 +110,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 _captureImage();
                               } else if (item == "gallery") {
                                 _selectImageFromGallery();
+                              } else if (item == "position") {
+                                setState(() {
+                                  eyePosition = const Offset(150, 150);
+                                });
                               }
                             },
                             itemBuilder: (BuildContext context) =>
@@ -116,6 +125,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               const PopupMenuItem<String>(
                                 value: "camera",
                                 child: Text('Take new Picture'),
+                              ),
+                              const PopupMenuItem<String>(
+                                value: "position",
+                                child: Text('Reset Position'),
                               ),
                             ],
                           ),
@@ -132,82 +145,136 @@ class _MyHomePageState extends State<MyHomePage> {
                             fit: BoxFit.fill,
                           ),
                         ),
-                        Positioned(
-                          left: position?.dx ?? 0,
-                          top: (position?.dy ?? 0) - height - 66,
-                          child: Draggable(
-                            feedback: Row(
-                              children: [
-                                Container(
-                                  width: 48,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.elliptical(90, 55),
+                        if (eyePositionClicked)
+                          Positioned(
+                            left: eyePosition?.dx ?? 0,
+                            top: (eyePosition?.dy ?? 0) - eyeCircleHeight - 94,
+                            child: Draggable(
+                              feedback: Row(
+                                children: [
+                                  Container(
+                                    width: 42,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(55, 55),
+                                      ),
+                                      color: Colors.green.withOpacity(0.5),
                                     ),
-                                    color: Colors.green.withOpacity(0.5),
-                                  ),
-                                  child: const Center(
-                                    child: SizedBox(),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 30,
-                                ),
-                                Container(
-                                  width: 48,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.elliptical(90, 55),
+                                    child: const Center(
+                                      child: SizedBox(),
                                     ),
-                                    color: Colors.green.withOpacity(0.5),
                                   ),
-                                  child: const Center(
-                                    child: SizedBox(),
+                                  const SizedBox(
+                                    width: 30,
                                   ),
-                                ),
-                              ],
-                            ),
-                            onDraggableCanceled:
-                                (Velocity velocity, Offset offset) {
-                              setState(() => position = offset);
-                            },
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 48,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.elliptical(90, 55),
+                                  Container(
+                                    width: 42,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(55, 55),
+                                      ),
+                                      color: Colors.green.withOpacity(0.5),
                                     ),
-                                    color: Colors.green.withOpacity(0.8),
-                                  ),
-                                  child: const Center(
-                                    child: SizedBox(),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 30,
-                                ),
-                                Container(
-                                  width: 48,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.elliptical(90, 55),
+                                    child: const Center(
+                                      child: SizedBox(),
                                     ),
-                                    color: Colors.green.withOpacity(0.8),
                                   ),
-                                  child: const Center(
-                                    child: SizedBox(),
+                                ],
+                              ),
+                              onDraggableCanceled:
+                                  (Velocity velocity, Offset offset) {
+                                if (!eyePositionClicked) {
+                                  return;
+                                }
+                                setState(() => eyePosition = offset);
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 42,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(55, 55),
+                                      ),
+                                      color: Colors.green.withOpacity(0.7),
+                                    ),
+                                    child: const Center(
+                                      child: SizedBox(),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(
+                                    width: 30,
+                                  ),
+                                  Container(
+                                    width: 42,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(55, 55),
+                                      ),
+                                      color: Colors.green.withOpacity(0.7),
+                                    ),
+                                    child: const Center(
+                                      child: SizedBox(),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
+                        if (mouthPositionClicked)
+                          Positioned(
+                            left: mouthPosition?.dx ?? 0,
+                            top: (mouthPosition?.dy ?? 0) -
+                                mouthCircleHeight -
+                                94,
+                            child: Draggable(
+                              feedback: Row(
+                                children: [
+                                  Container(
+                                    width: 75,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(55, 55),
+                                      ),
+                                      color: Colors.green.withOpacity(0.5),
+                                    ),
+                                    child: const Center(
+                                      child: SizedBox(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onDraggableCanceled:
+                                  (Velocity velocity, Offset offset) {
+                                if (!mouthPositionClicked) {
+                                  return;
+                                }
+                                setState(() => mouthPosition = offset);
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 75,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(55, 55),
+                                      ),
+                                      color: Colors.green.withOpacity(0.7),
+                                    ),
+                                    child: const Center(
+                                      child: SizedBox(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     const SizedBox(
@@ -246,7 +313,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           // TODO: change text and color of container and size of container and text
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                eyePositionClicked = true;
+                              });
+                            },
                             child: Container(
                               width: 60,
                               height: 65,
@@ -266,7 +337,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           // TODO: change text and color of container and size of container and text
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                mouthPositionClicked = true;
+                              });
+                            },
                             child: Container(
                               width: 60,
                               height: 65,
@@ -284,14 +359,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(
+                      height: 65,
+                    ),
                     // TODO: change text and color of container and size of container and text
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor:
-                              const MaterialStatePropertyAll(Colors.blueAccent),
+                          backgroundColor: MaterialStatePropertyAll(
+                              mouthPositionClicked && eyePositionClicked
+                                  ? Colors.blueAccent
+                                  : Colors.grey),
                           foregroundColor:
                               const MaterialStatePropertyAll(Colors.white),
                           minimumSize: const MaterialStatePropertyAll(
@@ -304,7 +383,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             side: BorderSide.none,
                           )),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          if (mouthPositionClicked && eyePositionClicked) {}
+                        },
                         child: const Text(
                           'Submit',
                           style: TextStyle(fontSize: 20),
