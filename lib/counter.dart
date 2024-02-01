@@ -1,7 +1,7 @@
 class Counter {
   int value = 0;
 
-  void increment() => value++;
+  int increment() => value++;
 
-  void decrement() => value--;
+  int decrement() => value--;
 }
